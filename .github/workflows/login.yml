@@ -35,8 +35,15 @@ jobs:
       - name: List dependencies
         run: npm list puppeteer @puppeteer/browsers
 
-      - name: Login into Serv00/CT8
+      - name: Verify src/main.js
+        run: cat src/main.js
+
+      - name: Login into Serv00/CT8 (with xvfb)
         run: |
           set -e
-          cat src/main.js #验证js文件
           xvfb-run --server-args="-screen 0 1280x1024x24" node src/main.js
+
+      - name: Login into Serv00/CT8 (without xvfb)
+        run: |
+          set -e
+          node src/main.js

@@ -20,16 +20,8 @@ async function sendTelegramMessage(token, chatId, message) {
     };
     try {
         const response = await axios.post(url, data);
-        // console.log('消息已发送到 Telegram:', response.data);
         console.log('消息已发送到 Telegram');
     } catch (error) {
-        // if (error.response) {
-        //     console.error('发送 Telegram 消息时出错:', error.response.status, error.response.data);
-        // } else if (error.request) {
-        //     console.error('发送 Telegram 消息时出错:', error.request);
-        // } else {
-        //     console.error('发送 Telegram 消息时出错:', error.message);
-        // }
         console.error('Telegram 消息发生失败');
     }
 }
@@ -43,25 +35,13 @@ async function sendTelegramMessage(token, chatId, message) {
     for (const account of accounts) {
         const { username, password, panel } = account;
 
-        // 显示浏览器窗口&使用自定义窗口大小
-        const browser = await puppeteer.launch({ 
-            headless: false, 
-            // args: [
-            //     '--no-sandbox',
-            //     '--disable-setuid-sandbox',
-            //     '--disable-dev-shm-usage',
-            //     '--disable-infobars',
-            //     '--disable-blink-features=AutomationControlled'
-            // ],
-            // defaultViewport: null,
-            // ignoreHTTPSErrors: true
+        const browser = await puppeteer.launch({
+            headless: "new", // 使用 headless 模式
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            // defaultViewport: { width: 1366, height: 768 }, // 根据需要设置视口大小
+            // ignoreHTTPSErrors: true, // 如果需要，忽略 HTTPS 错误
         });
         const page = await browser.newPage();
-        // await page.setViewport({ width: 1366, height: 768 });
-        // await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36');
-        // await page.evaluateOnNewDocument(() => {
-        //     delete Object.getPrototypeOf(navigator).webdriver;
-        // });
 
         let url = `https://${panel}/login/?next=/`;
 
@@ -109,11 +89,6 @@ async function sendTelegramMessage(token, chatId, message) {
                 await sendTelegramMessage(telegramToken, telegramChatId, `账号 ${username} 登录时出现错误: ${error.message}`);
             }
         } finally {
-            // 模拟人类行为
-            // await page.waitForTimeout(1000 + Math.floor(Math.random() * 2000)); 
-            // await page.type('#id_username', 'testuser', { delay: 100 + Math.floor(Math.random() * 100) });
-            // await page.click('#submit');
-            // await page.waitForNavigation();
             await page.close();
             await browser.close();
             const delay = Math.floor(Math.random() * 5000) + 1000; // 随机延时1秒到5秒之间

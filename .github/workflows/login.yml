@@ -26,10 +26,17 @@ jobs:
         with:
           node-version: '20.x'
 
+      - name: Clear npm cache
+        run: npm cache clean --force
+
       - name: Install dependencies
         run: npm install puppeteer axios
+
+      - name: List dependencies
+        run: npm list puppeteer @puppeteer/browsers
 
       - name: Login into Serv00/CT8
         run: |
           set -e
+          cat src/main.js #验证js文件
           xvfb-run --server-args="-screen 0 1280x1024x24" node src/main.js
